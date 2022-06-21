@@ -117,23 +117,28 @@ where $\mathbf{x}_{it} = (d_{it}, y_{it-1})$ and $\pmb{\beta} = (\beta, \rho)^{\
 ```
 since we normally assume $\text{Cov}(\epsilon_{it},\epsilon_{is}) = 0, \ t \ne s$ and $\text{Cov}(\epsilon_{it},\alpha_{i}) = 0, \ t = 1, \ldots, T$.
 
-The SEM approach to modelling time-invariant unobserved heterogeneity as a latent variable in dynamic models relies on our ability to decompose the correlations observed between columns of the wide-format outcome into a part that is due to unobserved time-invariant factors, and the autoregressive component.
+The SEM approach to modelling time-invariant unobserved heterogeneity as a latent variable in dynamic models relies on our ability to decompose the correlations observed between columns of the wide-format outcome into a part that is due to unobserved time-invariant factors, and the autoregressive component. Notice that this means we need at least three observed timepoints for the outcome to do so properly. Consider a simplified model with just two observed timepoints where we are trying to estimate separately the autoregressive effect and the stable unobserved factors: 
 
-This works most reliably when the outcome is at equilibrium, i.e., where the variances and covariances between adjacent columns of the outcome (means, as well, if the mean structure is being analyzed) are not changing drastically from one point in time to the other [@andersen2021]. @ou2017 refer to such processes as "ongoing stationary." If the process is not ongoing stationary, then the covariance between adjacent columns of the outcome will be changing, and it may be difficult for the model to properly estimate the autoregressive effect, along with the variance of the latent variable representing the stable factors, see again @andersen2021.
+```{=tex}
+\begin{align}
+y_{i1} & = \alpha_{i} + \epsilon_{i1} \\
+y_{i2} & = \rho y_{i1} + \alpha_{i} + \epsilon_{i2}
+\end{align}
+```
 
-To ensure both sources of covariance between columns of the wide-format outcome can be properly accounted for, it is advantageous if the process is ongoing stationary, and even better when there are sufficient observations of the outcome over time (ideally more than two).^[Actually, most approaches to panel modelling in SEM are robust even to data that are not yet at equilibrium. We can treat the initial observed outcome as ‘predetermined’, i.e., enter it as an exogenous variable into the model and allow it to covary freely with the unit effects (latent variable representing time-invariant unobserved heterogeneity), to avoid having to make strong assumptions about how long the data generating process has been going on previous to the observation period, see for example @allison2017; @andersen2021.]
+For this, we would need to estimate four parameters, $\theta = (\phi_{\alpha}, \psi_{1}, \psi_{2}, \rho)$, where $\phi_{\alpha} = \text{Var}(\alpha)$ and $\psi_{t} = \text{Var}(\epsilon_{t})$. But we have just three pieces of observed information, $\text{Var}(y_{1}), \text{Var}(y_{2}), \text{Cov}(y_{1},y_{2})$. This would mean our model is underidentified with $-1$ degrees of freedom. And fixing the factor loading of $\alpha \rightarrow y_{1}$ to one assumes the process under investigation is occurring within a vacuum, and that the cumulative effects of the previous realizations of the outcome have no bearing on the initial observation [@ou2017 call this the 'history independent endogenous' model]; an unrealistic assumption in most cases. Another option is to assume the process under investigation is 'ongoing endogenous' [@ou2017] and fix the initial factor loading to a specific value [see, for example @andersen2021], but this does not fix the problem of an underidentified model, either. In fact, in order to avoid making assumptions about the process before the observation period began, it is advised to generally treat the initial observations as 'predetermined', i.e., enter it into the model as an exogenous variable, allowing it to covary freely with the individual effects [@allison2017; @andersen2021; @ou2017]. This is the most robust choice but uses up another degree of freedom in the process. 
 
-While these conditions may sound restrictive at first, they simply reflect the assumptions that there are relatively stable individual levels/trajectories around which the temporal measures tend to hover, and that deviations from these tend to revert back to that underlying level/trajectory [@andersen2021, 6]. And these are basically baked-in to the DGP displayed in Figure \ref{fig-ldv-3}, which indeed features an autoregressive effect as well as stable factors affecting the outcome over time. In fact, we can look at Figure \ref{fig-ldv-3} as a 'close-up' of the overall DGP, focusing in on two measures of the outcome, as hardly any conceivable phenomena in the social sciences occur in such a vacuum.^[E.g., if we refer back to the examples mentioned above, we would assume stable factors affect the pupils' test scores not just in grades 10 and 12, but also in earlier grades, as well. And police expenditure likely hovers around a fairly stable level for long periods of time, based on stable unobserved characteristics of the city.]
+If we have three measures of the outcome, however, we can treat the initial observation as predetermined and generally have enough degrees of freedom to properly estimate the autoregressive effect as well as the variance of the time-invariant factors affecting the outcome (if we assume the autoregressive effect as well as the effect of the stable factors are both constant over time, a simple model with three measures of the outcome is just-identified with zero degrees of freedom). 
 
 More on the method for accounting for stable unobserved characteristics in panel models in SEM has been outlined elsewhere [e.g., @allison2011; @andersen2022; @bollen2010; @teachman2001], so we will not describe it in detail here. Instead, we show that by explicitly modeling the time-invariant unobserved heterogeneity, the causal effect of interest can be estimated without bias.
 
 ## A Simulated Example
 
-We construct a simulated dataset to demonstrate the use of SEM in accounting for time-varying and invariant confounders. To ensure the outcome is ongoing stationary, we simulate a 'spin-up' phase to allow the variances and covariances to reach equilibrium. Figure \ref{fig-ldv-4} shows the simulated DGP, where the initial outcomes, $Y_{0}-Y_{4}$ are treated as 'unobserved.' That is, we focus on three measures of the outcome over time, $Y_{5} - Y_{7}$, along with the causal variable, $D$, and account for the unobserved variables $U$ and $V$ indirectly.
+We construct a simulated dataset to demonstrate the use of SEM in accounting for time-varying and invariant confounders. We generate three measures of the outcome to be able to treat the initial observation as predetermined.^[We need to treat the initial observation as predetermined in this simulated example because the process will not yet have reached equilibrium (unless the autoregressive effect were to be diminishly small). This means that the ongoing endogenous and history independent endogenous specifications will be inappropriate, see @ou2017.] Figure \ref{fig-ldv-4} shows the simulated DGP, where we focus on three measures of the outcome over time, $Y_{0} - Y_{2}$, along with the causal variable, $D$, and account for the unobserved variables $U$ and $V$ indirectly.
 
 ![Simulated DGP](ldv-4.png){#fig-ldv-4}
 
-We look at linear additive effects. The exogenous variables, as well as the errors, are standard normal. The effect sizes were chosen arbitrarily and can be seen in the code below. The main causal effect of interest, $D \rightarrow Y7$ is set to the value 0.4.^[Normally, it is assumed that the effect of the time-invariant unobserved factors is constant over time. This assumption is reflected in the usual practice of fixing the factor loadings from the latent variable to the outcome to 1.0 at each point in time [@andersen2022; @bollen2010]. This assumption can be easily relaxed by allowing the factor loadings to be estimated freely after the first point in time. We retain it here as it is consistent with the simulated DGP.]
+We look at linear additive effects. The exogenous variables, as well as the errors, are standard normal. The effect sizes were chosen arbitrarily and can be seen in the code below. The main causal effect of interest, $D \rightarrow Y2$ is set to the value 0.4.^[Normally, it is assumed that the effect of the time-invariant unobserved factors is constant over time. This assumption is reflected in the usual practice of fixing the factor loadings from the latent variable to the outcome to 1.0 at each point in time [@andersen2022; @bollen2010]. This assumption can be easily relaxed by allowing the factor loadings to be estimated freely after the first point in time. We retain it here as it is consistent with the simulated DGP.]
 
 ```{r}
 #| message: false
@@ -156,13 +161,8 @@ beta  = 0.4 # Causal effect of interest
 # Time-invariant unobserved heterogeneity 
 V = rnorm(n, 0, 1)
 
-# Simulate spin-up phase to allow Yt to reach equilibrium
+# Simulate initial realization of outcome
 Y0 = 1 * V + rnorm(n, 0, 1)
-Y1 = rho * Y0 + 1 * V + rnorm(n, 0, 1)
-Y2 = rho * Y1 + 1 * V + rnorm(n, 0, 1)
-Y3 = rho * Y2 + 1 * V + rnorm(n, 0, 1)
-Y4 = rho * Y3 + 1 * V + rnorm(n, 0, 1)
-Y5 = rho * Y4 + 1 * V + rnorm(n, 0, 1)
 
 # Time-varying confounder 
 U = rnorm(n, 0, 1)
@@ -170,12 +170,13 @@ U = rnorm(n, 0, 1)
 # Causal variable 
 D = gamma * U + rnorm(n, 0, 1)
 
-# Focus on effect D -> Y7, holding Y6 constant 
-Y6 = delta * U + rho * Y5 + 1 * V + rnorm(n, 0, 1)
-Y7 = beta  * D + rho * Y6 + 1 * V + rnorm(n, 0, 1)
+# Remaining realizations of outcome 
+Y1 = delta * U + rho * Y0 + 1 * V + rnorm(n, 0, 1)
+Y2 = beta  * D + rho * Y1 + 1 * V + rnorm(n, 0, 1)
 
 # Put into dataframe
-df = data.frame(Y0, Y1, Y2, Y3, Y4, Y5, Y6, Y7, D, V, U)
+df = data.frame(Y0, Y1, Y2, 
+                D, V, U)
 ```
 
 Obviously, if both $U$ and $V$ were observed, then we could estimate the model without bias. We can estimate the entire model simultaneously in SEM using the `lavaan` package in `R`.
@@ -184,8 +185,8 @@ Obviously, if both $U$ and $V$ were observed, then we could estimate the model w
 #| message: false
 #| warning: false
 m1 = "
-  Y7 ~ beta*D + rho*Y6 + V 
-  Y6 ~ delta*U + V
+  Y2 ~ beta*D + rho*Y1 + V 
+  Y1 ~ delta*U + V
   D  ~ gamma*U 
 "
 m1.fit = sem(model = m1, data = df, estimator = "ML") %>%
@@ -208,8 +209,8 @@ Now, to see the point @morgan2014 were making, let us assume $V$ is unobserved. 
 
 ```{r}
 m2 = "
-  Y7 ~ beta*D + rho*Y6 
-  Y6 ~ delta*U 
+  Y2 ~ beta*D + rho*Y1 
+  Y1 ~ delta*U 
   D  ~ gamma*U 
 "
 m2.fit = sem(model = m2, data = df, estimator = "ML") %>%
@@ -225,29 +226,29 @@ est2 <- lavInspect(m2.fit, "list") %>%
   as.numeric()
 ```
 
-The effect of $D$ on $Y_{7}$ is biased in this model with an estimated coefficient of `r round(est2, 3)`.
+The effect of $D$ on $Y_{2}$ is biased in this model with an estimated coefficient of `r round(est2, 3)`.
 
 In SEM though, $V$ is explicitly accounted for as a latent variable. It represents the correlation of the outcome with itself over time, over and above the lagged causal variable and the autoregressive effect. In the following model, both $U$ and $V$ are still treated as unobserved.
 
-We specify a latent variable to account for time-invariant unobserved heterogeneity with `alpha =~ 1*Y6 + 1*Y7` and regress `Y7` on both `D` and `Y6`. We include `Y5` in the model as an exogenous variable, allowing it to covary freely with the stable factors represented by `alpha`. Allowing the initial observation to covary freely with the stable factors accounts for situations in which the outcome is not yet at equilibrium, see @andersen2021 and it is the common approach in dynamic models [e.g., @allison2017]. Including `Y5` and regressing `Y6` on it further helps the model better differentiate the autoregressive from the stable unit effects.
+We specify a latent variable to account for time-invariant unobserved heterogeneity with `alpha =~ 1*Y1 + 1*Y2` and regress `Y2` on both `D` and `Y1`. We include `Y0` in the model as an exogenous variable, allowing it to covary freely with the stable factors represented by `alpha`. Allowing the initial observation to covary freely with the stable factors accounts for situations in which the outcome is not yet at equilibrium, see @andersen2021 and it is the common approach in dynamic models [e.g., @allison2017]. Including `Y0` and regressing `Y1` on it further helps the model better differentiate the autoregressive from the stable unit effects.
 
 Note that we use the name `alpha` here instead of `V` because `lavaan` will usually return an error if one of the names of the latent variables overlaps with the name of one of the observed variables.
 
-Finally, since `U` is now also unobserved, we allow `Y6` and `D` to covary to account for this common cause. Figure \ref{fig-ldv-5} shows the SEM approach graphically.
+Finally, since `U` is now also unobserved, we allow `Y1` and `D` to covary to account for this common cause. Figure \ref{fig-ldv-5} shows the SEM approach graphically.
 
 ![Modelling strategy in SEM (from m3.fit)](ldv-5.png){#fig-ldv-5}
 
 ```{r}
 m3 = "
   # Individual effects to account for V
-  alpha =~ 1*Y6 + 1*Y7
+  alpha =~ 1*Y1 + 1*Y2
   # Regressions 
-  Y7 ~ beta*D + rho*Y6
-  Y6 ~ rho*Y5
+  Y2 ~ beta*D + rho*Y1
+  Y1 ~ rho*Y0
   # Allow initial outcome to correlate with unit effects
-  alpha ~~ Y5
+  alpha ~~ Y0
   # Account for U, common cause of Y6 and D 
-  D ~~ Y6
+  D ~~ Y1
 "
 m3.fit = sem(model = m3, data = df, estimator = "ML") %>%
   summary()
@@ -268,47 +269,42 @@ Now, the estimate of the causal effect is relatively close to the true parameter
 #| message: false
 #| warning: false
 #| cache: true 
-
 sim_func = function(rho = 0.3, beta = 0.4, gamma = 0.6, delta = 0.5) {
   
-  # Set large sample size 
-  n <- 1000L
-
+  # Set large sample size
+  n = 1000L
+  
   # Time-invariant unobserved heterogeneity 
   V = rnorm(n, 0, 1)
-
-  # Simulate spin-up phase to allow Yt to reach equilibrium
+  
+  # Simulate initial realization of outcome
   Y0 = 1 * V + rnorm(n, 0, 1)
-  Y1 = rho * Y0 + 1 * V + rnorm(n, 0, 1)
-  Y2 = rho * Y1 + 1 * V + rnorm(n, 0, 1)
-  Y3 = rho * Y2 + 1 * V + rnorm(n, 0, 1)
-  Y4 = rho * Y3 + 1 * V + rnorm(n, 0, 1)
-  Y5 = rho * Y4 + 1 * V + rnorm(n, 0, 1)
-
+  
   # Time-varying confounder 
   U = rnorm(n, 0, 1)
-
+  
   # Causal variable 
   D = gamma * U + rnorm(n, 0, 1)
-
-  # Focus on effect D -> Y7, holding Y6 constant 
-  Y6 = delta * U + rho * Y5 + 1 * V + rnorm(n, 0, 1)
-  Y7 = beta  * D + rho * Y6 + 1 * V + rnorm(n, 0, 1)
-
+  
+  # Remaining realizations of outcome 
+  Y1 = delta * U + rho * Y0 + 1 * V + rnorm(n, 0, 1)
+  Y2 = beta  * D + rho * Y1 + 1 * V + rnorm(n, 0, 1)
+  
   # Put into dataframe
-  df = data.frame(Y0, Y1, Y2, Y3, Y4, Y5, Y6, Y7, D, V, U)
+  df = data.frame(Y0, Y1, Y2, 
+                  D, V, U)
   
   # Fit the model 
   mx = "
     # Individual effects to account for V
-    alpha =~ 1*Y6 + 1*Y7
+    alpha =~ 1*Y1 + 1*Y2
     # Regressions 
-    Y7 ~ beta*D + rho*Y6
-    Y6 ~ rho*Y5
+    Y2 ~ beta*D + rho*Y1
+    Y1 ~ rho*Y0
     # Allow initial outcome to correlate with unit effects
-    alpha ~~ Y5
+    alpha ~~ Y0
     # Account for U, common cause of Y6 and D 
-    D ~~ Y6
+    D ~~ Y1
   "
   mx.fit = sem(model = mx, data = df, estimator = "ML")
   
@@ -326,17 +322,98 @@ sim_func = function(rho = 0.3, beta = 0.4, gamma = 0.6, delta = 0.5) {
 res = replicate(n = 10000L, expr = sim_func())
 ```
 
-We can see that the estimated coefficient is unbiased:
+The estimated coefficient is unbiased
 
 ```{r}
-mean(res)
-median(res)
+mean(res); median(res)
+sd(res)
 ```
 
-and approximately normally distributed around the true structural coefficient of 0.4:
+and approximately normally distributed around the true structural coefficient of 0.4, see Figure \ref{fig-hist-res}.
 
 ```{r}
-hist(res, breaks = 30)
+#| fig-cap: "Histogram, sampling distribution of res"
+#| label: fig-hist-res
+hist(res, main = NULL, xlab = NULL, breaks = 30)
+```
+
+Readers will notice the distribution is somewhat skewed and has a large variance. Even if the estimated coefficient is unbiased, the statistical properties are improved if the underlying data has had more time to reach equilibrium. In other words, the way we simulated the data above means the variances of the outcome over time, as well as the covariances of adjacent columns of the outcome are changing rapidly near the beginning of the process [@andersen2021]. 
+If we first allow the process to reach equilibrium (variances, covariances, as well as means are constant over time), then the sampling distribution becomes more normal, and the variance is reduced. We can show this by first simulating a 'spin-up' phase for the outcome, and then focusing in on the causal model. 
+
+```{r}
+#| message: false
+#| warning: false
+#| cache: true 
+sim_func2 = function(rho = 0.3, beta = 0.4, gamma = 0.6, delta = 0.5) {
+
+  # Set large sample size
+  n <- 1000L
+  
+  # Time-invariant unobserved heterogeneity
+  V = rnorm(n, 0, 1)
+  
+  # Simulate spin-up phase to allow Yt to reach equilibrium
+  Y0 = 1 * V + rnorm(n, 0, 1)
+  Y1 = rho * Y0 + 1 * V + rnorm(n, 0, 1)
+  Y2 = rho * Y1 + 1 * V + rnorm(n, 0, 1)
+  Y3 = rho * Y2 + 1 * V + rnorm(n, 0, 1)
+  Y4 = rho * Y3 + 1 * V + rnorm(n, 0, 1)
+  Y5 = rho * Y4 + 1 * V + rnorm(n, 0, 1)
+  
+  # Time-varying confounder
+  U = rnorm(n, 0, 1)
+ 
+  # Causal variable
+  D = gamma * U + rnorm(n, 0, 1)
+  
+  # Focus on effect D -> Y7, holding Y6 constant
+  Y6 = delta * U + rho * Y5 + 1 * V + rnorm(n, 0, 1)
+  Y7 = beta * D + rho * Y6 + 1 * V + rnorm(n, 0, 1)
+  
+  # Put into dataframe
+  df = data.frame(Y0, Y1, Y2, Y3, Y4, Y5, Y6, Y7, D, V, U)
+  
+  # Fit the model
+  mx = "
+    # Individual effects to account for V
+    alpha =~ 1*Y6 + 1*Y7
+    # Regressions
+    Y7 ~ beta*D + rho*Y6
+    Y6 ~ rho*Y5
+    # Allow initial outcome to correlate with unit effects
+    alpha ~~ Y5
+    # Account for U, common cause of Y6 and D
+    D ~~ Y6
+    "
+  mx.fit = sem(model = mx, data = df, estimator = "ML")
+  
+  # Get estimate of beta
+  est = lavInspect(mx.fit, "list") %>%
+    filter(op == "~") %>%
+    filter(label == "beta") %>%
+    select(est) %>%
+    as.numeric()
+  
+  # Return estimate of beta
+  return(est)
+}
+
+res2 = replicate(n = 10000L, expr = sim_func2())
+```
+
+The estimate of the causal effect is still unbiased
+
+```{r}
+mean(res2); median(res2)
+sd(res2)
+```
+
+but now the sampling distribution better approximates the normal distribution and the spread of the estimated coefficients is tighter, see Figure \ref{fig-hist-res2}.
+
+```{r}
+#| fig-cap: "Histogram, sampling distribution of res2"
+#| label: fig-hist-res2
+hist(res2, main = NULL, xlab = NULL, breaks = 30)
 ```
 
 ## Conclusion
