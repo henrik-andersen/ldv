@@ -28,7 +28,7 @@ bibliography: references.bib
 
 ## Introduction
 
-There is a long tradition in sociology and psychology of using cross-lagged panel models to investigate dynamic processes [@rogosa1980] in structural equation modeling (SEM). These usually look at the the lagged bidirectional effects of two variables (cross-lagged paths, CL) while holding the previous values of these variables constant (autoregressive paths, AR).
+There is a long tradition in sociology and psychology of using cross-lagged panel models to investigate dynamic processes [@rogosa1980] in structural equation modeling (SEM). These usually look at the lagged bidirectional effects of two variables (cross-lagged paths, CL) while holding the previous values of these variables constant (autoregressive paths, AR).
 
 At the same time, such models have been shown to be biased in the presence of time-invariant unobserved heterogeneity. Effective ways to incorporate time-invariant unobserved heterogeneity into cross-lagged panel models have been around for several decades now [e.g., @bollen2004; @curran2001] and this topic has experienced renewed interest in the last several years [@curran2014; @hamaker2015].
 
