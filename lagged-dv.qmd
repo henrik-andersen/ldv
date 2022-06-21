@@ -42,9 +42,7 @@ In this brief article, we will outline the arguments for and against the inclusi
 
 ## Benefits of the LDV
 
-Consider an empirical example by @coleman1982 and outlined in @morgan2014. There, Coleman and colleagues were looking to assess the causal effect of attending a Catholic school as opposed to public school on achievement, as measured by pupils' test scores. The direct acyclic graph (DAG) shown in Figure \ref{fig-ldv-1} summarizes their hypothesized data generating process (DGP), where black circles represent observed variables and white ones unobserved variables.[^1]
-
-[^1]: Empirical examples chosen for this article were taken from the helpful video tutorial on LDVs by Mikko Rönkkö, <https://www.youtube.com/watch?v=DhV5otUB3Jc>.
+Consider an empirical example by @coleman1982 and outlined in @morgan2014. There, Coleman and colleagues were looking to assess the causal effect of attending a Catholic school as opposed to public school on achievement, as measured by pupils' test scores. The direct acyclic graph (DAG) shown in Figure \ref{fig-ldv-1} summarizes their hypothesized data generating process (DGP), where black circles represent observed variables and white ones represent unobserved variables.^[Empirical examples chosen for this article were taken from the helpful video tutorial on LDVs by Mikko Rönkkö, <https://www.youtube.com/watch?v=DhV5otUB3Jc>.]
 
 ::: {#fig-dag-1 layout-ncol="2"}
 ![Without LDV](ldv-1.png){#fig-ldv-1}
@@ -56,19 +54,15 @@ Catholic school example from @coleman1982
 
 In this DAG, $Y_{10}$ represents the pupil's test score in grade 10, $X$ are observed determinants of test scores and $O$ are observed background factors that influence test scores, the determinants of test scores, the selection of school system, as well as the unobserved factors in $U$. For its part, $U$ could contain any number of potentially umeasured things like motivation or intelligence, that would impact the choice of school system (Catholic schools might prefer to admit intelligent pupils) and the pupil's test scores themselves.
 
-Conditioning on $X$ and $O$ would close all back-door paths except $Y_{10} \leftarrow D \leftarrow U \rightarrow Y_{10}$. Because $U$ contains all the unobserved determinants of the causal variable and the outcome, it cannot be conditioned on and the causal effect of interest is unidentified [@morgan2014, 270].
+Conditioning on $X$ and $O$ would close all back-door paths except $D \leftarrow U \rightarrow Y_{10}$. Because $U$ contains all the unobserved determinants of the causal variable and the outcome, it cannot be conditioned on and the causal effect of interest is unidentified [@morgan2014, 270].
 
 @coleman1982 came to a solution to this problem by collecting data on the pupils' test scores two years later, in grade 12. By looking at the DAG in Figure \ref{fig-ldv-2}, we can see that $Y_{10}$ "screen\[s\] off the effects of the variables in $U$ on $Y_{12}$" [@morgan2014, 270]. Indeed, by focusing on test scores in grade 12 and including the lagged measure from grade 10 in the model, the back-door paths over the unobservables in $U$ are blocked and the causal effect of $D$ on $Y_{12}$ is identified.
 
-Note that $U$ could potentially include the unmeasured outcome even further in the past. In this way, the inclusion of the lagged dependent variable also accounts for endogeneity, where the causal variable is impacted by previous outcomes. An example given by @wooldridge2012 [313] concerns the explanation of crime as a function of police expenditure. It is plausible that more is spent on policing in areas where crime rates have been high in the past. Simply regressing the crime rate on expenditure will likely be misleading, because where there is a high crime rate, there will be increased spending, so the effect of spending on crime may even be positive.[^2] Including the lagged crime rate allows for an intuitive interpretation of the effect of expenditure: it is the difference in crime rate between two hypothetical cities with the same crime rate in the previous period given a unit change in expenditure [@wooldridge2012].
-
-[^2]: This is not to justify police expenditure, which is a difficult topic in some parts of the world. It may still be that police spending has a positive causal effect on crime, or that there is no tangible effect. But the estimated effect in a simple regression of current crime rate on current expenditure will likely be biased in one way or another.
+Note that $U$ could potentially include the unmeasured outcome even further in the past. In this way, the inclusion of the lagged dependent variable also accounts for endogeneity, where the causal variable is impacted by previous outcomes. An example given by @wooldridge2012 [313] concerns the explanation of crime as a function of police expenditure. It is plausible that more is spent on policing in areas where crime rates have been high in the past. Simply regressing the crime rate on expenditure will likely be misleading, because where there is a high crime rate, there will be increased spending, so the effect of spending on crime may even be positive.^[This is not to justify police expenditure, which is a difficult topic in some parts of the world. It may still be that police spending has a positive causal effect on crime, or that there is no tangible effect. But the estimated effect in a simple regression of current crime rate on current expenditure will likely be biased in one way or another.] Including the lagged crime rate allows for an intuitive interpretation of the effect of expenditure: it is the difference in crime rate between two hypothetical cities with the same crime rate in the previous period given a unit change in expenditure [@wooldridge2012].
 
 ## Arguments Against the LDV
 
-To continue with outlining the issue, let us turn to a simpler DAG as shown in Figure \ref{fig-ldv-3}, which is adapted also from @morgan2014 [p. 111, Fig. 4,3].[^3] In this DAG, we have dropped the observed variables captured in $X$ and $O$ from above. Since they are observed, we can drop them from the following discussion without loss of generality. We still have $D$, the causal variable of interest, and two measures of the outcome, represented by $Y_{1}$ and $Y_{2}$. Consistent with the Catholic school example, the inclusion of $Y_{1}$ as an observed predictor of $Y_{2}$ closes the back-door path across $D \leftarrow U \rightarrow Y_{1} \rightarrow Y_{2}$.
-
-[^3]: The same thing is shown in the variation of Model 7 in @cinelli2022, where $Z$ takes the place of the LDV.
+To continue with outlining the issue, let us turn to a simpler DAG as shown in Figure \ref{fig-ldv-3}, which is adapted also from @morgan2014 [p. 111, Fig. 4,3].^[The same thing is shown in the variation of Model 7 in @cinelli2022, where $Z$ takes the place of the LDV.] In this DAG, we have dropped the observed variables captured in $X$ and $O$ from above. Since they are observed, we can drop them from the following discussion without loss of generality. We still have $D$, the causal variable of interest, and two measures of the outcome, represented by $Y_{1}$ and $Y_{2}$. Consistent with the Catholic school example, the inclusion of $Y_{1}$ as an observed predictor of $Y_{2}$ closes the back-door path across $D \leftarrow U \rightarrow Y_{1} \rightarrow Y_{2}$.
 
 ![Lagged DV as collider from @morgan2014](ldv-3.png){#fig-ldv-3}
 
@@ -127,11 +121,9 @@ The SEM approach to modelling time-invariant unobserved heterogeneity as a laten
 
 This works most reliably when the outcome is at equilibrium, i.e., where the variances and covariances between adjacent columns of the outcome (means, as well, if the mean structure is being analyzed) are not changing drastically from one point in time to the other [@andersen2021]. @ou2017 refer to such processes as "ongoing stationary." If the process is not ongoing stationary, then the covariance between adjacent columns of the outcome will be changing, and it may be difficult for the model to properly estimate the autoregressive effect, along with the variance of the latent variable representing the stable factors, see again @andersen2021.
 
-To ensure both sources of covariance between columns of the wide-format outcome can be properly accounted for, it is advantageous if the process is ongoing stationary, and even better when there are sufficient observations of the outcome over time (ideally more than two).
+To ensure both sources of covariance between columns of the wide-format outcome can be properly accounted for, it is advantageous if the process is ongoing stationary, and even better when there are sufficient observations of the outcome over time (ideally more than two).^[Actually, most approaches to panel modelling in SEM are robust even to data that are not yet at equilibrium. We can treat the initial observed outcome as ‘predetermined’, i.e., enter it as an exogenous variable into the model and allow it to covary freely with the unit effects (latent variable representing time-invariant unobserved heterogeneity), to avoid having to make strong assumptions about how long the data generating process has been going on previous to the observation period, see for example @allison2017; @andersen2021.]
 
-While these conditions may sound restrictive at first, they simply reflect the assumptions that there are relatively stable individual levels/trajectories around which the temporal measures tend to hover, and that deviations from these tend to revert back to that underlying level/trajectory [@andersen2021, 6]. And these are basically baked-in to the DGP displayed in Figure \ref{fig-ldv-3}, which indeed features an autoregressive effect as well as stable factors affecting the outcome over time. In fact, we can look at Figure \ref{fig-ldv-3} as a 'close-up' of the overall DGP, focusing in on two measures of the outcome, as hardly any conceivable phenomena in the social sciences occur in such a vacuum.[^4]
-
-[^4]: E.g., if we refer back to the examples mentioned above, we would assume stable factors affect the pupils' test scores not just in grades 10 and 12, but also in earlier grades, as well. And police expenditure likely hovers around a fairly stable level for long periods of time, based on stable unobserved characteristics of the city.
+While these conditions may sound restrictive at first, they simply reflect the assumptions that there are relatively stable individual levels/trajectories around which the temporal measures tend to hover, and that deviations from these tend to revert back to that underlying level/trajectory [@andersen2021, 6]. And these are basically baked-in to the DGP displayed in Figure \ref{fig-ldv-3}, which indeed features an autoregressive effect as well as stable factors affecting the outcome over time. In fact, we can look at Figure \ref{fig-ldv-3} as a 'close-up' of the overall DGP, focusing in on two measures of the outcome, as hardly any conceivable phenomena in the social sciences occur in such a vacuum.^[E.g., if we refer back to the examples mentioned above, we would assume stable factors affect the pupils' test scores not just in grades 10 and 12, but also in earlier grades, as well. And police expenditure likely hovers around a fairly stable level for long periods of time, based on stable unobserved characteristics of the city.]
 
 More on the method for accounting for stable unobserved characteristics in panel models in SEM has been outlined elsewhere [e.g., @allison2011; @andersen2022; @bollen2010; @teachman2001], so we will not describe it in detail here. Instead, we show that by explicitly modeling the time-invariant unobserved heterogeneity, the causal effect of interest can be estimated without bias.
 
@@ -141,9 +133,7 @@ We construct a simulated dataset to demonstrate the use of SEM in accounting for
 
 ![Simulated DGP](ldv-4.png){#fig-ldv-4}
 
-We look at linear additive effects. The exogenous variables, as well as the errors, are standard normal. The effect sizes were chosen arbitrarily and can be seen in the code below. The main causal effect of interest, $D \rightarrow Y7$ is set to the value 0.4.[^5]
-
-[^5]: Normally, it is assumed that the effect of the time-invariant unobserved factors is constant over time. This assumption is reflected in the usual practice of fixing the factor loadings from the latent variable to the outcome to 1.0 at each point in time [@andersen2022; @bollen2010]. This assumption can be easily relaxed by allowing the factor loadings to be estimated freely after the first point in time. We retain it here as it is consistent with the simulated DGP.
+We look at linear additive effects. The exogenous variables, as well as the errors, are standard normal. The effect sizes were chosen arbitrarily and can be seen in the code below. The main causal effect of interest, $D \rightarrow Y7$ is set to the value 0.4.^[Normally, it is assumed that the effect of the time-invariant unobserved factors is constant over time. This assumption is reflected in the usual practice of fixing the factor loadings from the latent variable to the outcome to 1.0 at each point in time [@andersen2022; @bollen2010]. This assumption can be easily relaxed by allowing the factor loadings to be estimated freely after the first point in time. We retain it here as it is consistent with the simulated DGP.]
 
 ```{r}
 #| message: false
@@ -237,7 +227,7 @@ est2 <- lavInspect(m2.fit, "list") %>%
 
 The effect of $D$ on $Y_{7}$ is biased in this model with an estimated coefficient of `r round(est2, 3)`.
 
-In SEM though, $U$ is explicitly accounted for as a latent variable. It represents the correlation of the outcome with itself over time, over and above the lagged causal variable and the autoregressive effect. In the following model, both $U$ and $V$ are still treated as unobserved.
+In SEM though, $V$ is explicitly accounted for as a latent variable. It represents the correlation of the outcome with itself over time, over and above the lagged causal variable and the autoregressive effect. In the following model, both $U$ and $V$ are still treated as unobserved.
 
 We specify a latent variable to account for time-invariant unobserved heterogeneity with `alpha =~ 1*Y6 + 1*Y7` and regress `Y7` on both `D` and `Y6`. We include `Y5` in the model as an exogenous variable, allowing it to covary freely with the stable factors represented by `alpha`. Allowing the initial observation to covary freely with the stable factors accounts for situations in which the outcome is not yet at equilibrium, see @andersen2021 and it is the common approach in dynamic models [e.g., @allison2017]. Including `Y5` and regressing `Y6` on it further helps the model better differentiate the autoregressive from the stable unit effects.
 
@@ -245,7 +235,7 @@ Note that we use the name `alpha` here instead of `V` because `lavaan` will usua
 
 Finally, since `U` is now also unobserved, we allow `Y6` and `D` to covary to account for this common cause. Figure \ref{fig-ldv-5} shows the SEM approach graphically.
 
-![Modelling strategy in SEM (m3.fit)](ldv-5.png){#fig-ldv-5}
+![Modelling strategy in SEM (from m3.fit)](ldv-5.png){#fig-ldv-5}
 
 ```{r}
 m3 = "
