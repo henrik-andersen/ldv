@@ -7,7 +7,7 @@ author:
   - name: Jochen Mayerl 
     affiliation: Chemnitz University of Technology 
     orcid: 0000-0002-4599-9976 
-abstract: "It has been argued that including the lagged dependent variable in panel models will open up unintended back-door paths and bias the estimates of the causal variable. We show that panel analysis in the structural equation modeling framework gets around this issue. Including the lagged dependent variable has the benefit of closing back-door paths due to unobserved time-varying confounders. We demonstrate this by looking at simulated data in the `lavaan` package for `R`."
+abstract: "It has been argued that including the lagged dependent variable in panel models will open up unintended back-door paths and bias the estimates of the causal variable. We show that panel analysis in the structural equation modeling framework can get around this issue. Including the lagged dependent variable has the benefit of closing back-door paths due to unobserved time-varying confounders. We demonstrate this by looking at simulated data in the `lavaan` package for `R`."
 citation: true
 date: '`r format(Sys.Date())`'
 toc: true
@@ -30,7 +30,7 @@ bibliography: references.bib
 
 There is a long tradition in sociology and psychology of using cross-lagged panel models to investigate dynamic processes [@rogosa1980] in structural equation modeling (SEM). These usually look at the lagged bidirectional effects of two variables (cross-lagged paths, CL) while holding the previous values of these variables constant (autoregressive paths, AR).
 
-At the same time, such models have been shown to be biased in the presence of time-invariant unobserved heterogeneity. Effective ways to incorporate time-invariant unobserved heterogeneity into cross-lagged panel models have been around for several decades now [e.g., @bollen2004; @curran2001] and this topic has experienced renewed interest in the last several years [@curran2014; @hamaker2015].
+At the same time, such models have been shown to be biased in the presence of time-invariant unobserved heterogeneity. Effective ways to incorporate time-invariant unobserved heterogeneity into cross-lagged panel models have been around for several decades now [e.g., @bollen2004; @curran2001] and this topic has experienced renewed interest in the last several years [@curran2014; @hamaker2015; @zyphur2020a; @zyphur2020b].
 
 The basic idea of cross-lagged panel models that account for unobserved time-invariant confounders can also be generalized to 'unidirectional' models that focus on the effect of one variable on another while de-emphasizing the question of reverse causality [@allison2017; @moral-benito2018; @williams2018]. We could call these 'dynamic fixed effects' models because they all account for both unobserved time-invariant heterogeneity as well as state dependence by including the lagged dependent variable (lagged DV or LDV).
 
@@ -126,9 +126,11 @@ y_{i2} & = \rho y_{i1} + \alpha_{i} + \epsilon_{i2}
 \end{align}
 ```
 
-For this, we would need to estimate four parameters, $\theta = (\phi_{\alpha}, \psi_{1}, \psi_{2}, \rho)$, where $\phi_{\alpha} = \text{Var}(\alpha)$ and $\psi_{t} = \text{Var}(\epsilon_{t})$. But we have just three pieces of observed information, $\text{Var}(y_{1}), \text{Var}(y_{2}), \text{Cov}(y_{1},y_{2})$. This would mean our model is underidentified with $-1$ degrees of freedom. And fixing the factor loading of $\alpha \rightarrow y_{1}$ to one assumes the process under investigation is occurring within a vacuum, and that the cumulative effects of the previous realizations of the outcome have no bearing on the initial observation [@ou2017 call this the 'history independent endogenous' model]; an unrealistic assumption in most cases. Another option is to assume the process under investigation is 'ongoing endogenous' [@ou2017] and fix the initial factor loading to a specific value [see, for example @andersen2021], but this does not fix the problem of an underidentified model, either. In fact, in order to avoid making assumptions about the process before the observation period began, it is advised to generally treat the initial observations as 'predetermined', i.e., enter it into the model as an exogenous variable, allowing it to covary freely with the individual effects [@allison2017; @andersen2021; @ou2017]. This is the most robust choice but uses up another degree of freedom in the process. 
+For this, we would need to estimate four parameters, $\theta = (\phi_{\alpha}, \psi_{1}, \psi_{2}, \rho)$, where $\phi_{\alpha} = \text{Var}(\alpha)$ and $\psi_{t} = \text{Var}(\epsilon_{t})$. But we have just three pieces of observed information, $\text{Var}(y_{1}), \text{Var}(y_{2}), \text{Cov}(y_{1},y_{2})$. This would mean our model is underidentified with $-1$ degrees of freedom. 
 
-If we have three measures of the outcome, however, we can treat the initial observation as predetermined and generally have enough degrees of freedom to properly estimate the autoregressive effect as well as the variance of the time-invariant factors affecting the outcome (if we assume the autoregressive effect as well as the effect of the stable factors are both constant over time, a simple model with three measures of the outcome is just-identified with zero degrees of freedom). 
+Furthermore, (implictly) fixing the factor loading of $\alpha \rightarrow y_{1}$ to 1.0 assumes the process under investigation is occurring within a vacuum, and that the cumulative effects of the previous realizations of the outcome have no bearing on the initial observation [@ou2017 call this the 'history independent endogenous' model]; an unrealistic assumption in most cases. Another option is to assume the process under investigation is 'ongoing endogenous' [@ou2017] and fix the initial factor loading to a specific value [see, for example @andersen2021], but this does not fix the problem of an underidentified model, either. In fact, in order to avoid making assumptions about the process before the observation period began, it is generally advised to treat the initial observations as 'predetermined', i.e., enter it into the model as an exogenous variable, allowing it to covary freely with the individual effects [@allison2017; @andersen2021; @ou2017]. This is the most robust choice but uses up another degree of freedom in the process. 
+
+If we have three measures of the outcome, however, we can treat the initial observation as predetermined and generally have enough degrees of freedom to properly estimate the autoregressive effect as well as the variance of the time-invariant factors affecting the outcome. Doing so requires we assume the effect of the unobserved stable factors is constant over time (this assumption is reflected in the usual practice of fixing the factor loadings from the latent variable to the outcome to 1.0 at each point in time [@andersen2022; @bollen2010]), and that the autoregressive effect is constant over time, as well (in other words, there is no moderation by period effects; a plausible assumption in many sociological applications based on observational data). For example, a simple model with three measures of the outcome and the above-mentioned assumptions is just-identified with zero degrees of freedom. The longer the observed timeframe, and the more observed covariates we include in the model, the more degrees of freedom we have to be able to relax these and other assumptions, if necessary.
 
 More on the method for accounting for stable unobserved characteristics in panel models in SEM has been outlined elsewhere [e.g., @allison2011; @andersen2022; @bollen2010; @teachman2001], so we will not describe it in detail here. Instead, we show that by explicitly modeling the time-invariant unobserved heterogeneity, the causal effect of interest can be estimated without bias.
 
@@ -138,7 +140,7 @@ We construct a simulated dataset to demonstrate the use of SEM in accounting for
 
 ![Simulated DGP](ldv-4.png){#fig-ldv-4}
 
-We look at linear additive effects. The exogenous variables, as well as the errors, are standard normal. The effect sizes were chosen arbitrarily and can be seen in the code below. The main causal effect of interest, $D \rightarrow Y2$ is set to the value 0.4.^[Normally, it is assumed that the effect of the time-invariant unobserved factors is constant over time. This assumption is reflected in the usual practice of fixing the factor loadings from the latent variable to the outcome to 1.0 at each point in time [@andersen2022; @bollen2010]. This assumption can be easily relaxed by allowing the factor loadings to be estimated freely after the first point in time. We retain it here as it is consistent with the simulated DGP.]
+We look at linear additive effects. The exogenous variables, as well as the errors, are standard normal. The effect sizes were chosen arbitrarily and can be seen in the code below. The main causal effect of interest, $D \rightarrow Y2$ is set to the value 0.4.
 
 ```{r}
 #| message: false
@@ -230,13 +232,19 @@ The effect of $D$ on $Y_{2}$ is biased in this model with an estimated coefficie
 
 In SEM though, $V$ is explicitly accounted for as a latent variable. It represents the correlation of the outcome with itself over time, over and above the lagged causal variable and the autoregressive effect. In the following model, both $U$ and $V$ are still treated as unobserved.
 
-We specify a latent variable to account for time-invariant unobserved heterogeneity with `alpha =~ 1*Y1 + 1*Y2` and regress `Y2` on both `D` and `Y1`. We include `Y0` in the model as an exogenous variable, allowing it to covary freely with the stable factors represented by `alpha`. Allowing the initial observation to covary freely with the stable factors accounts for situations in which the outcome is not yet at equilibrium, see @andersen2021 and it is the common approach in dynamic models [e.g., @allison2017]. Including `Y0` and regressing `Y1` on it further helps the model better differentiate the autoregressive from the stable unit effects.
+We specify a latent variable to account for time-invariant unobserved heterogeneity with `alpha =~ 1*Y1 + 1*Y2` and regress `Y2` on both `D` and `Y1`. We include `Y0` in the model as an exogenous variable, allowing it to covary freely with the stable factors represented by `alpha`. Allowing the initial observation to covary freely with the stable factors accounts for situations in which the outcome is not yet at equilibrium, see @andersen2021 and it is the common approach in dynamic models [e.g., @allison2017]. 
 
 Note that we use the name `alpha` here instead of `V` because `lavaan` will usually return an error if one of the names of the latent variables overlaps with the name of one of the observed variables.
 
-Finally, since `U` is now also unobserved, we allow `Y1` and `D` to covary to account for this common cause. Figure \ref{fig-ldv-5} shows the SEM approach graphically.
+Finally, since `U` is now also unobserved, we allow `Y1` and `D` to covary to account for this common cause. Figure \ref{fig-dag-5-both} shows the SEM approach graphically, both as a DAG (Figure \ref{fig-ldv-5}) and in the style of a traditional SEM path model (Figure \ref{fig-ldv-6}).
 
-![Modelling strategy in SEM (from m3.fit)](ldv-5.png){#fig-ldv-5}
+::: {#fig-dag-5-both layout-ncol="2"}
+![DAG](ldv-5.png){#fig-ldv-5}
+
+![SEM path model](ldv-6.png){#fig-ldv-6}
+
+Modelling strategy in SEM (from m3.fit)
+:::
 
 ```{r}
 m3 = "
@@ -338,7 +346,7 @@ hist(res, main = NULL, xlab = NULL, breaks = 30)
 ```
 
 Readers will notice the distribution is somewhat skewed and has a large variance. Even if the estimated coefficient is unbiased, the statistical properties are improved if the underlying data has had more time to reach equilibrium. In other words, the way we simulated the data above means the variances of the outcome over time, as well as the covariances of adjacent columns of the outcome are changing rapidly near the beginning of the process [@andersen2021]. 
-If we first allow the process to reach equilibrium (variances, covariances, as well as means are constant over time), then the sampling distribution becomes more normal, and the variance is reduced. We can show this by first simulating a 'spin-up' phase for the outcome, and then focusing in on the causal model. 
+If we first allow the process to reach equilibrium (variances, covariances, as well as means are fairly constant over time), then the sampling distribution becomes more normal, and the variance is reduced. We can show this by first simulating a 'spin-up' phase for the outcome, and then focusing in on the causal model at a later point in time. 
 
 ```{r}
 #| message: false
