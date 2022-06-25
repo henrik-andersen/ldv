@@ -28,7 +28,7 @@ bibliography: references.bib
 
 ## Introduction
 
-There is a long tradition in sociology and psychology of using cross-lagged panel models to investigate dynamic processes [@rogosa1980] in structural equation modeling (SEM). These usually look at the lagged bidirectional effects of two variables (cross-lagged paths, CL) while holding the previous values of these variables constant (autoregressive paths, AR).
+There is a long tradition in sociology and psychology of using cross-lagged panel models to investigate dynamic processes [@rogosa1980] in structural equation modeling (SEM). These usually look at the lagged bidirectional effects of two variables (cross-lagged paths) while holding the previous values of these variables constant (autoregressive paths).
 
 At the same time, such models have been shown to be biased in the presence of time-invariant unobserved heterogeneity. Effective ways to incorporate time-invariant unobserved heterogeneity into cross-lagged panel models have been around for several decades now [e.g., @bollen2004; @curran2001] and this topic has experienced renewed interest in the last several years [@curran2014; @hamaker2015; @zyphur2020a; @zyphur2020b].
 
@@ -36,7 +36,7 @@ The basic idea of cross-lagged panel models that account for unobserved time-inv
 
 Indeed [@kuehnel2018] argue that the inclusion of the LDV make such models more desirable than 'static fixed effects' models (which do not include the lagged dependent variable) because they potentially account for confounding by certain time-varying variables, as well.
 
-Still, many are skeptical of the use of such models. Often, the skepticism centers directly on the use of the LDV. Indeed, many articles warn of including the LDV in a panel regression model [e.g., @bruederl2014; @dafoe2014; @foster2010; @dafoe2015; @collischon2020; @keele2006; @leszczensky2019b; @mouw2006; @walters2019]. One of the most convincing arguments is given by @morgan2014 [p. 111, Figure 4.3]. There, they show that the inclusion of the LDV may bias the causal effect of interest in the presence of time-invariant unobserved heterogeneity.
+Still, many are skeptical of the use of such models. Often, the skepticism centers directly on the use of the LDV. Indeed, many articles warn of including the LDV in a panel regression model [e.g., @achen2000; @bruederl2014; @collischon2020; @dafoe2014; @dafoe2015; @foster2010; @keele2006; @leszczensky2019b; @mouw2006; @thompson2021; @vaisey2017; @walters2019]. Often, these criticisms reference @morgan2014 [p. 111, Figure 4.3]. There, they show that the inclusion of the LDV may indeed bias the causal effect of interest in the presence of time-invariant unobserved heterogeneity. We are aware of just one methodological article that argues for the use of the LDV, and it does not make reference to the SEM approach [@wilkins2017].
 
 In this brief article, we will outline the arguments for and against the inclusion of the LDV and then show that the usual SEM approach to panel modelling is not generally affected by the criticism. We hope to convince readers of the usefulness of the broad class of (cross-lagged) dynamic panel models with fixed effects in SEM.
 
@@ -75,6 +75,8 @@ To continue with outlining the issue, let us turn to a simpler DAG as shown in F
 The novelty of this DAG compared to the previous ones is the inclusion of $V$. It represents the time-invariant unobserved heterogeneity. It is an unobserved variable that affects the outcome at all points in time. It can also be thought of as the combined effect of all the time-invariant factors affecting the outcome. The issue, outlined in @morgan2014, is that if $V$ is unobserved, then $Y_{1}$ is also a collider variable and controlling for it therefore opens a new back-door path over $V$, rendering the causal effect biased.
 
 This point is often the one criticisms of the LDV focus on. @keele2006 [187] write, for example, that "\[e\]ven when a lagged dependent variable is theoretically appropriate, remaining residual autocorrelation can lead to biased coefficient results." Here, the remaining residual autocorrelation is the time-invariant unobserved heterogeneity; the unobserved stable factors that cause the outcome to be correlated with itself over time [@andersen2022]. @foster2010 [1467] echos this, stating "\[s\]uch analyses \[that include the LDV\] are problematic. As has long been known in economics and other fields, in the presence of autocorrelation (a relationship between unobservables over time), the resulting estimates have poor statistical properties." @collischon2020 [297] argue against the LDV in a similar fashion.
+
+And criticisms of the LDV continue basically to this day. @thompson2021 write "including lagged dependent variables does not rule out time-stable confounding and may bias estimates" [592]. Even models that attempt to combine fixed effects (accounting for bias by time-invariant unobserved heterogeneity) with the LDV are advised against: "research has shown that [LDV] estimators are in danger of being biased, this applies to linear regression as well as fixed effects environments" [@gattig2021, 129].
 
 The intuition for these arguments can be shown easily. To simplify things, let us assume variables are mean centered and scaled to have a variance of one, as @cinelli2022 do. Then, by path tracing, labelling the structural coefficients $\lambda$, the covariances of the observed variables, $Y_{2}, Y_{1}, D$ are given by
 
@@ -123,19 +125,19 @@ where $\mathbf{x}_{it} = (d_{it}, y_{it-1})$ and $\pmb{\beta} = (\beta, \rho)^{\
 ```
 since we normally assume $\text{Cov}(\epsilon_{it},\epsilon_{is}) = 0, \ t \ne s$ and $\text{Cov}(\epsilon_{it},\alpha_{i}) = 0, \ t = 1, \ldots, T$.
 
-The SEM approach to modelling time-invariant unobserved heterogeneity as a latent variable in dynamic models relies on our ability to decompose the correlations observed between columns of the wide-format outcome into a part that is due to unobserved time-invariant factors, and the autoregressive component. Notice that this means we need at least three observed timepoints for the outcome to do so properly. Consider a simplified model with just two observed timepoints where we are trying to estimate separately the autoregressive effect and the stable unobserved factors:
+The SEM approach to modelling time-invariant unobserved heterogeneity as a latent variable in dynamic models relies on our ability to decompose the correlations observed between columns of the wide-format outcome into a part that is due to unobserved time-invariant factors, and the autoregressive component. Notice that this means we need at least three observed timepoints of the outcome to do so properly [@bollen2004; @ou2017]. To show this, consider a simplified model with just two observed timepoints where we are trying to estimate separately the autoregressive effect and the stable unobserved factors:
 
 ```{=tex}
 \begin{align}
 y_{i1} & = \alpha_{i} + \epsilon_{i1} \\
-y_{i2} & = \rho y_{i1} + \alpha_{i} + \epsilon_{i2}
+y_{i2} & = \rho y_{i1} + \alpha_{i} + \epsilon_{i2}.
 \end{align}
 ```
 For this, we would need to estimate four parameters, $\theta = (\phi_{\alpha}, \psi_{1}, \psi_{2}, \rho)$, where $\phi_{\alpha} = \text{Var}(\alpha)$ and $\psi_{t} = \text{Var}(\epsilon_{t})$. But we have just three pieces of observed information, $\text{Var}(y_{1}), \text{Var}(y_{2}), \text{Cov}(y_{1},y_{2})$. This would mean our model is underidentified with $-1$ degrees of freedom.
 
-Furthermore, (implictly) fixing the factor loading of $\alpha \rightarrow y_{1}$ to 1.0 assumes the process under investigation is occurring within a vacuum, and that the cumulative effects of the previous realizations of the outcome have no bearing on the initial observation [@ou2017 call this the 'history independent endogenous' model]; an unrealistic assumption in most cases. Another option is to assume the process under investigation is 'ongoing endogenous' [@ou2017] and fix the initial factor loading to a specific value [see, for example @andersen2021], but this does not fix the problem of an underidentified model, either. In fact, in order to avoid making assumptions about the process before the observation period began, it is generally advised to treat the initial observations as 'predetermined', i.e., enter it into the model as an exogenous variable, allowing it to covary freely with the individual effects [@allison2017; @andersen2021; @ou2017]. This is the most robust choice but uses up another degree of freedom in the process.
+Furthermore, (implicitly) fixing the factor loading of $\alpha \rightarrow y_{1}$ to 1.0 assumes the process under investigation is occurring within a vacuum, and that the cumulative effects of the previous realizations of the outcome have no bearing on the initial observation [@ou2017 call this the 'history independent endogenous' model]; an unrealistic assumption in most cases. Another option is to assume the process under investigation is 'ongoing endogenous' [@ou2017] and fix the initial factor loading to a specific value [see, for example @andersen2021], but this does not fix the problem of an underidentified model, either. In fact, in order to avoid making assumptions about the process before the observation period began, it is generally advised to treat the initial observations as 'predetermined', i.e., enter it into the model as an exogenous variable, allowing it to covary freely with the individual effects [@allison2017; @andersen2021; @ou2017]. This is the most robust choice but it uses up another degree of freedom in the process.
 
-If we have three measures of the outcome, however, we can treat the initial observation as predetermined and generally have enough degrees of freedom to properly estimate the autoregressive effect as well as the variance of the time-invariant factors affecting the outcome. Doing so requires we assume the effect of the unobserved stable factors is constant over time (this assumption is reflected in the usual practice of fixing the factor loadings from the latent variable to the outcome to 1.0 at each point in time [@andersen2022; @bollen2010]), and that the autoregressive effect is constant over time, as well (in other words, there is no moderation by period effects; a plausible assumption in many sociological applications based on observational data). For example, a simple model with three measures of the outcome and the above-mentioned assumptions is just-identified with zero degrees of freedom. The longer the observed timeframe, and the more observed covariates we include in the model, the more degrees of freedom we have to be able to relax these and other assumptions, if necessary.
+If we have three measures of the outcome, however, we can treat the initial observation as predetermined and generally have enough degrees of freedom to properly estimate the autoregressive effect as well as the variance of the time-invariant factors affecting the outcome. Doing so requires that we assume the effect of the unobserved stable factors is constant over time (this assumption is reflected in the usual practice of fixing the factor loadings from the latent variable to the outcome to 1.0 at each point in time [@andersen2022; @bollen2010]), and that the autoregressive effect is constant over time, as well (in other words, there is no moderation by period effects; a plausible assumption in many sociological applications based on observational data). For example, a simple model with three measures of the outcome and the above-mentioned assumptions is just-identified with zero degrees of freedom. The longer the observed timeframe, and the more observed covariates we include in the model, the more degrees of freedom we have to be able to relax these and other assumptions, if necessary.
 
 More on the method for accounting for stable unobserved characteristics in panel models in SEM has been outlined elsewhere [e.g., @allison2011; @andersen2022; @bollen2010; @teachman2001], so we will not describe it in detail here. Instead, we show that by explicitly modeling the time-invariant unobserved heterogeneity, the causal effect of interest can be estimated without bias.
 
@@ -162,10 +164,10 @@ library(dplyr)
 # Set large sample size 
 n <- 1000L
 
-rho   = 0.3 # Autoregressive effect
+rho   = 0.3 # Autoregressive effect, Yt -> Yt+1
 gamma = 0.6 # Effect U -> D
-delta = 0.5 # Effect U -> Y6
-beta  = 0.4 # Causal effect of interest
+delta = 0.5 # Effect U -> Y1
+beta  = 0.4 # Causal effect, D -> Y2
 
 # Time-invariant unobserved heterogeneity 
 V = rnorm(n, 0, 1)
@@ -187,11 +189,13 @@ Y2 = beta  * D + rho * Y1 + 1 * V + rnorm(n, 0, 1)
 df = data.frame(Y0, Y1, Y2, D, V, U)
 ```
 
-### All Observed Variables 
+In a narrative fashion, we run a progression of models on this simulated data. First, to establish a baseline, we will act as though all the variables were observed (`m1`). Then, we demonstrate the point @morgan2014 and others have made that a model with a LDV is biased in the presence of time-invariant unobserved heterogeneity (`m2`). Finally, we discuss and show the SEM approach to explicitly modelling the time-invariant unobserved heterogeneity as a latent variable and that the causal effect of interest can be estimated without bias (`m3`). 
 
-Obviously, if both $U$ and $V$ were observed, then we could estimate the model without bias. We can estimate the entire model simultaneously in SEM using the `lavaan` package in `R`. We call this first model `m1`, and the `lavaan` code and summary output is shown directly below. 
+### All Observed Variables
 
-Note that the first realization of the outcome, $Y_{0}$ does not act as a confounder (any backdoor paths across it are blocked), so in this and the next model, we can safely ignore it without biasing the causal effect of interest. In the third model, where we account for the constant factors affecting the outcome as a latent variable, we will need $Y_{0}$ to be able to estimate the effect of the stable factors and the autoregressive effect separately. 
+Obviously, if both $U$ and $V$ were observed, then we could estimate the model without bias. We can estimate the entire model simultaneously in SEM using the `lavaan` package in `R`. We call this first model `m1`, and the `lavaan` code and summary output is shown directly below.
+
+Note that the first realization of the outcome, $Y_{0}$ does not act as a confounder (any backdoor paths across it are blocked), so in this and the next model, we can safely ignore it without biasing the causal effect of interest. In the third model, where we account for the constant factors affecting the outcome as a latent variable, we will need $Y_{0}$ to be able to estimate the effect of the stable factors and the autoregressive effect separately.
 
 ```{r}
 #| message: false
@@ -217,9 +221,9 @@ est1 = lavInspect(m1.fit, "list") %>%
 
 Here, the causal effect of interest (labeled `beta`) is unbiased at about `r round(est1, 3)` (the slight discrepancy is due to sampling error).
 
-### LDV with $V$ Unobserved 
+### LDV with $V$ Unobserved
 
-Now, to see the point @morgan2014 were making, let us assume $V$ is unobserved. Including the lagged dependent variable will close the back-door path over $U$ but the bias will still be present because $V$ is unobserved. We call this second model `m2`. The code and summary output follow. 
+Now, to see the point @morgan2014 were making, let us assume $V$ is unobserved. Including the lagged dependent variable will close the back-door path over $U$ but the bias will still be present because $V$ is unobserved. We call this second model `m2`. The code and summary output follow.
 
 ```{r}
 m2 = "
@@ -240,13 +244,15 @@ est2 <- lavInspect(m2.fit, "list") %>%
   as.numeric()
 ```
 
-The effect of $D$ on $Y_{2}$ (again labelled `beta`) is biased in this model with an estimated coefficient of `r round(est2, 3)`.
+The effect of $D$ on $Y_{2}$ (again labelled `beta`) is biased in this model with an estimated coefficient of `r round(est2, 3)`. In repeated samples with this particular combination of coefficients, the average estimate of the causal effect is around 0.3, about 25% smaller than the true effect. 
 
-### LDV with $V$ as Latent Variable 
+### LDV with $V$ as Latent Variable
 
 In SEM though, $V$ is explicitly accounted for as a latent variable. It represents the correlation of the outcome with itself over time, over and above the lagged causal variable and the autoregressive effect. In the following model, called `m3`, both $U$ and $V$ are still treated as unobserved, but we will treat $V$ as a latent variable and account for confounding by $U$ by including the LDV.
 
-We specify a latent variable to account for time-invariant unobserved heterogeneity with `alpha =~ 1*Y1 + 1*Y2` (line 3 of `m3`)^[Note that we use the name `alpha` here instead of `V` because `lavaan` will usually return an error if one of the names of the latent variables overlaps with the name of one of the observed variables.] and regress `Y2` on both `D` and `Y1` (line 4). We include `Y0` in the model as an exogenous variable, allowing it to covary freely with the stable factors represented by `alpha` (line 8). Allowing the initial observation to covary freely with the stable factors accounts for situations in which the outcome is not yet at equilibrium, see @andersen2021 and it is the common approach in dynamic models [e.g., @allison2017]. Finally, since `U` is now also unobserved, we allow `Y1` and `D` to covary to account for this common cause (line 10). Figure \ref{fig-dag-5-both} shows the SEM approach graphically, both as a DAG (Figure \ref{fig-ldv-5}) and in the style of a traditional SEM path model (Figure \ref{fig-ldv-6}).
+We specify a latent variable to account for time-invariant unobserved heterogeneity with `alpha =~ 1*Y1 + 1*Y2` (line 3 of `m3`)[^5] and regress `Y2` on both `D` and `Y1` (line 4). We include `Y0` in the model as an exogenous variable, allowing it to covary freely with the stable factors represented by `alpha` (line 8). Allowing the initial observation to covary freely with the stable factors accounts for situations in which the outcome is not yet at equilibrium, see @andersen2021 and it is the common approach in dynamic models [e.g., @allison2017]. Finally, since `U` is now also unobserved, we allow `Y1` and `D` to covary to account for this common cause (line 10). Figure \ref{fig-dag-5-both} shows the SEM approach graphically, both as a DAG (Figure \ref{fig-ldv-5}) and in the style of a traditional SEM path model (Figure \ref{fig-ldv-6}).
+
+[^5]: Note that we use the name `alpha` here instead of `V` because `lavaan` will usually return an error if one of the names of the latent variables overlaps with the name of one of the observed variables.
 
 ::: {#fig-dag-5-both layout-ncol="2"}
 ![DAG](ldv-5.png){#fig-ldv-5}
@@ -265,7 +271,7 @@ m3 = "
   Y1 ~ rho*Y0
   # Allow initial outcome to correlate with unit effects
   alpha ~~ Y0
-  # Account for U, common cause of Y6 and D 
+  # Account for U, common cause of Y1 and D 
   D ~~ Y1
 "
 m3.fit = sem(model = m3, data = df, estimator = "ML") %>%
@@ -281,12 +287,15 @@ est3 <- lavInspect(m3.fit, "list") %>%
   as.numeric()
 ```
 
-Now, the estimate of the causal effect is relatively close to the true parameter at `r round(est3, 3)`. And this is not a fluke: we can draw many samples to show that the estimated coefficient is approximately equal to the causal effect.
+Now, the estimate of the causal effect is close to the true parameter at `r round(est3, 3)`. And this is not a fluke, the discrepancy here is simply due to sampling error. We can draw many samples to show that the estimated coefficient is approximately equal to the causal effect.
 
 ```{r}
 #| message: false
 #| warning: false
 #| cache: true 
+
+set.seed(9876)
+
 sim_func = function(rho = 0.3, beta = 0.4, gamma = 0.6, delta = 0.5) {
   
   # Set large sample size
@@ -320,7 +329,7 @@ sim_func = function(rho = 0.3, beta = 0.4, gamma = 0.6, delta = 0.5) {
     Y1 ~ rho*Y0
     # Allow initial outcome to correlate with unit effects
     alpha ~~ Y0
-    # Account for U, common cause of Y6 and D 
+    # Account for U, common cause of Y1 and D 
     D ~~ Y1
   "
   mx.fit = sem(model = mx, data = df, estimator = "ML")
@@ -335,7 +344,7 @@ sim_func = function(rho = 0.3, beta = 0.4, gamma = 0.6, delta = 0.5) {
   return(est)
 }
 
-res = replicate(n = 5000L, expr = sim_func())
+res = replicate(n = 10000L, expr = sim_func())
 ```
 
 The estimated coefficient is unbiased at `r round(mean(res), 3)` (with a standard deviation for the sampling distribution of `r round(sd(res), 3)`), and approximately normally distributed, see Figure \ref{fig-hist-res}.
@@ -359,6 +368,6 @@ LDVs are not a silver bullet, however. The researcher's qualitative hypotheses m
 
 Finally, we did not look at other potential approaches to LDVs, such as the Arellano-Bond (AB) differenced model (which is perhaps the most promising approach outside of SEM), which tries to use lags even further back from the current outcome as instruments [@bruederl2014]. In a series of simulations, @leszczensky2019b showed that AB and SEM both performed well under a wide variety of underlying DGPs and assumptions.
 
-Instead, this paper chose to draw attention to an apparently overlooked aspect. At this very moment, a researcher at a sociological conference is likely being alerted to the fact that the LDV is a collider and that their SEM and its results are biased. We believe this should not be a blanket criticism, and that SEM provides a flexible framework for modeling various dynamic processes that suit researchers' qualitative hypotheses.
+Instead, this paper chose to draw attention to an apparently overlooked aspect. At this very moment, a researcher at a conference is likely being alerted to the fact that the LDV is a collider and that their SEM and its results are biased. We believe this should not be a blanket criticism, and that SEM provides a flexible framework for modeling various dynamic processes that suit researchers' qualitative hypotheses.
 
 ## References
